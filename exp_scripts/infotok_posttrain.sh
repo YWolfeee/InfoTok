@@ -31,7 +31,7 @@ NUM_VIDEO_FRAMES=33  # Must be temporal_compression * n + 1 (4*8+1=33)
 # ============================================================
 # DEBUG: Single GPU test run
 # ============================================================
-WANDB_MODE=offline CUDA_VISIBLE_DEVICES=0 torchrun --nproc_per_node=1 --rdzv_endpoint=localhost:${PORT} \
+WANDB_MODE=offline CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.run --nproc_per_node=1 --rdzv_endpoint=localhost:${PORT} \
     -m cosmos_predict1.tokenizer.training.train \
     --config=cosmos_predict1/tokenizer/training/configs/config.py -- \
     experiment=${EXPERIMENT_NAME} \
@@ -50,7 +50,7 @@ WANDB_MODE=offline CUDA_VISIBLE_DEVICES=0 torchrun --nproc_per_node=1 --rdzv_end
 # ============================================================
 # Full training: Multi-GPU
 # ============================================================
-# torchrun --nproc_per_node=${NUM_GPUS_PER_NODE} --rdzv_endpoint=localhost:${PORT} \
+# python -m torch.distributed.run --nproc_per_node=${NUM_GPUS_PER_NODE} --rdzv_endpoint=localhost:${PORT} \
 #     -m cosmos_predict1.tokenizer.training.train \
 #     --config=cosmos_predict1/tokenizer/training/configs/config.py -- \
 #     experiment=${EXPERIMENT_NAME} \

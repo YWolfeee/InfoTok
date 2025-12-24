@@ -11,7 +11,7 @@ iopath==0.1.10
 ipdb==0.13.13
 loguru==0.7.2
 mediapy==1.2.2
-megatron-core==0.10.0
+megatron-core==0.7.0
 nltk==3.9.1
 numpy==1.26.4
 nvidia-ml-py==12.535.133

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-CHECKPOINT_DIR="./infotok/checkpoints"
+CHECKPOINT_DIR="./checkpoints"
 GT_VIDEO_DIR="./default_videos"
 OUT_VIDEO_DIR="./outputs"
 MODEL_NAME="infotok_mse.pt"

@@ -16,7 +16,7 @@
 <img src="assets/infotok-header.png" width=95%>
 </p>
 
-**InfoTok** is an adaptive discrete video tokenizer designed for efficient and accurate compression of long video sequences. Unlike traditional tokenizers that use a fixed compression rate, InfoTok allocates tokens dynamically based on the informational content of video segments in a principled way, significantly improving the efficiency.
+**InfoTok** is an adaptive discrete video tokenizer designed for efficient and accurate video compression. Unlike traditional tokenizers that use a fixed compression rate, InfoTok allocates tokens dynamically based on the informational content of video segments in a principled way, significantly improving the efficiency. 
 
 ## Installation
 
@@ -80,12 +80,14 @@ python3 -m cosmos_predict1.tokenizer.inference.video_cli \
 | `--tokenizer_type` | Model architecture | `OURS4x8x8-mse-256p-88` |
 | `--temporal_window` | Frames per window | `33` |
 | `--overlap_window` | Overlap frames for blending | `5` |
-| `--strategy` | Rate allocation (`global_elbo`, `static`) | `global_elbo` |
+| `--strategy` | Rate allocation (`global_elbo` or `static`) | `global_elbo` |
 | `--avg_rate` | Target average token usage ratio (0.0625~1.0) | `0.5` |
+
+Here, `global_elbo` means that we allocate the token budget across all temporal frames according to the ELBO values, while `static` means that we use `avg_rate` for all temporal frames (and mask tokens within each frame).
 
 ## Post-Training
 
-### 0. Additional Dependencies (Training Only)
+### Additional Dependencies (Training Only)
 
 Post-training requires additional dependencies:
 
@@ -104,7 +106,7 @@ CUDA_HOME=$CONDA_PREFIX pip install -v --disable-pip-version-check --no-cache-di
 cd ..
 ```
 
-### 1. Prepare Dataset
+### Prepare Dataset
 
 Register your dataset in `cosmos_predict1/tokenizer/training/datasets/dataset_provider.py`:
 
@@ -114,7 +116,7 @@ _VIDEO_PATTERN_DICT = {
 }
 ```
 
-### 2. Run Training
+### Run Training
 
 **Single GPU (Debug):**
 
@@ -128,7 +130,7 @@ bash exp_scripts/infotok_posttrain.sh
 export PYTHONPATH=$(pwd)
 export OUTPUT_ROOT="/path/to/checkpoints"
 
-torchrun --nproc_per_node=8 --rdzv_endpoint=localhost:29501 \
+python -m torch.distributed.run --nproc_per_node=8 --rdzv_endpoint=localhost:29501 \
     -m cosmos_predict1.tokenizer.training.train \
     --config=cosmos_predict1/tokenizer/training/configs/config.py -- \
     experiment=ADV4x8x8_256p_CUSTOM_Posttrain \
