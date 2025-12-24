@@ -1,0 +1,6 @@
+checkpoints/
+outputs/
+wandb/
+__pycache__
+apex/
+Video_Tokenization.ipynb
