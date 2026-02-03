@@ -8,17 +8,19 @@
 
 </div>
 
-<p align="center" style="font-size: larger;">
-  <a href="https://research.nvidia.com/labs/dir/infotok/">Check our website here!</a>
-</p>
+## 📰 News
+- **[2026.02.03]** 📝 Check out our **[website](https://research.nvidia.com/labs/dir/infotok/)** for details about the intuition and results!
+- **[2026.01.26]** 🎉 Our paper has been accepted at **ICLR 2026**!
+
+## 🔬 Overview
 
 <p align="center">
-<img src="assets/infotok-header.png" width=95%>
+<img src="assets/infotok-header.png" width=90%>
 </p>
 
-**InfoTok** is an adaptive discrete video tokenizer designed for efficient and accurate video compression. Unlike traditional tokenizers that use a fixed compression rate, InfoTok allocates tokens dynamically based on the informational content of video segments in a principled way, significantly improving the efficiency. 
+**InfoTok** is an adaptive discrete video tokenizer **based on informational content**. Unlike traditional tokenizers that use a fixed compression rate, InfoTok tokenizes videos into 1D sequences such that each token's information is balanced in a principled way, greatly improving the efficiency and semantical structure. 
 
-## Installation
+## 🛠️ Installation
 
 ### Prerequisites
 
@@ -47,7 +49,7 @@ pip install -r requirements.txt
 huggingface-cli download qyoo/infotok-flex --local-dir checkpoints/
 ```
 
-## Inference
+## 🚀 Inference
 
 ### Quick Start
 
@@ -85,7 +87,7 @@ python3 -m cosmos_predict1.tokenizer.inference.video_cli \
 
 Here, `global_elbo` means that we allocate the token budget across all temporal frames according to the ELBO values, while `static` means that we use `avg_rate` for all temporal frames (and mask tokens within each frame).
 
-## Post-Training
+## 🏃 Post-Training
 
 ### Additional Dependencies (Training Only)
 
@@ -152,7 +154,7 @@ checkpoints/
     └── iter_{N}_ema.jit      # EMA model
 ```
 
-## Citation
+## 📜 Citation
 
 If you find InfoTok useful, please cite:
 
@@ -168,6 +170,6 @@ If you find InfoTok useful, please cite:
 }
 ```
 
-## Acknowledgments
+## 🙏 Acknowledgments
 
 InfoTok is built on [NVIDIA Cosmos-Predict1](https://github.com/nvidia-cosmos/cosmos-predict1). We thank the Cosmos team for their infrastructure and pre-trained models.
