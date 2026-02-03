@@ -9,7 +9,7 @@
 </div>
 
 <p align="center" style="font-size: larger;">
-  <a href="https://arxiv.org/abs/2512.16975">InfoTok: Adaptive Discrete Video Tokenizer via Information-Theoretic Compression</a>
+  <a href="https://research.nvidia.com/labs/dir/infotok/">Check our website here!</a>
 </p>
 
 <p align="center">
