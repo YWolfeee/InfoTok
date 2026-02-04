@@ -26,6 +26,11 @@
 <em>InfoTok adaptively tokenizes videos from coarse to fine granularity, achieving a highly compact representation.</em>
 </p>
 
+<p align="center">
+<img src="assets/infotok-table.png" width=90%>
+<br>
+<em>InfoTok achieves superior reconstruction under identical compression rates.</em>
+</p>
 
 
 
