@@ -14,11 +14,20 @@
 
 ## 🔬 Overview
 
-<p align="center">
+**InfoTok** is an adaptive discrete video tokenizer **based on informational content**. Unlike traditional tokenizers that use a fixed compression rate, InfoTok tokenizes videos into 1D sequences such that each token's information is balanced in a principled way, greatly improving the efficiency and semantical structure. 
+
+<!-- <p align="center">
 <img src="assets/infotok-header.png" width=90%>
+</p> -->
+
+<p align="center">
+<img src="assets/compare_length.png" width=90%>
+<br>
+<em>InfoTok adaptively tokenizes videos from coarse to fine granularity, achieving a highly compact representation.</em>
 </p>
 
-**InfoTok** is an adaptive discrete video tokenizer **based on informational content**. Unlike traditional tokenizers that use a fixed compression rate, InfoTok tokenizes videos into 1D sequences such that each token's information is balanced in a principled way, greatly improving the efficiency and semantical structure. 
+
+
 
 ## 🛠️ Installation
 
