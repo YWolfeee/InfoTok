@@ -9,6 +9,7 @@
 </div>
 
 ## 📰 News
+- **[2026.02.06]** 🎉 Our paper has been selected as ORAL!! We will release our tokenizer checkpoints soon.
 - **[2026.02.03]** 📝 Check out our **[website](https://research.nvidia.com/labs/dir/infotok/)** for details about the intuition and results!
 - **[2026.01.26]** 🎉 Our paper has been accepted at **ICLR 2026**!
 
@@ -54,13 +55,6 @@ export PYTHONPATH=$(pwd)
 
 # Install dependencies
 pip install -r requirements.txt
-```
-
-### Download Checkpoints
-
-```bash
-# Download from HuggingFace
-huggingface-cli download qyoo/infotok-flex --local-dir checkpoints/
 ```
 
 ## 🚀 Inference
