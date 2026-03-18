@@ -4,3 +4,9 @@ wandb/
 __pycache__
 apex/
 Video_Tokenization.ipynb
+infotok-flex/
+tokenbench_240p/
+davis_240p/
+infotok_tokenbench_240p/
+infotok_davis_240p/
+TokenBench/

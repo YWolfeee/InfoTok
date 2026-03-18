@@ -9,6 +9,7 @@
 </div>
 
 ## 📰 News
+- **[2026.03.17]** 🎉 We release our **[checkpoint](https://huggingface.co/qyoo/infotok-flex)** trained on longer videos!
 - **[2026.02.06]** 🎉 Our paper has been selected as ORAL!! We will release our tokenizer checkpoints soon.
 - **[2026.02.03]** 📝 Check out our **[website](https://research.nvidia.com/labs/dir/infotok/)** for details about the intuition and results!
 - **[2026.01.26]** 🎉 Our paper has been accepted at **ICLR 2026**!
@@ -22,9 +23,12 @@
 </p> -->
 
 <p align="center">
-<img src="assets/compare_length.png" width=90%>
-<br>
-<em>InfoTok adaptively tokenizes videos from coarse to fine granularity, achieving a highly compact representation.</em>
+  <img src="assets/1747309095480157_compare.gif" width=45%>
+  <img src="assets/panda70m_test_0000007_00000_360p_compare.gif" width=45%>
+</p>
+
+<p align="center">
+<em>InfoTok adaptively tokenizes videos based on its complexity, achieving a highly compact representation.</em>
 </p>
 
 <p align="center">
@@ -57,24 +61,41 @@ export PYTHONPATH=$(pwd)
 pip install -r requirements.txt
 ```
 
+### Checkpoint
+
+We release the checkpoint of **InfoTok-Flex** post-trained on 81-frame temporal windows at different resolution on non-square videos. Download it with:
+```
+git lfs install
+
+git clone https://huggingface.co/qyoo/infotok-flex
+```
+
+The checkpoint will be saved in `infotok-flex/infotok_mse.pt`
+
 ## 🚀 Inference
 
 ### Quick Start
 
 ```bash
+# Reconstruction
 bash exp_scripts/infotok_inference.sh
+
+# Visualize The Token Usage Detail
+bash exp_scripts/infotok_inference.sh visualize_mask
 ```
+
+Visualize the results at `outputs/`.
 
 ### Detailed Usage
 
 ```bash
 python3 -m cosmos_predict1.tokenizer.inference.video_cli \
     --video_pattern "/path/to/videos/*.mp4" \
-    --checkpoint /path/to/infotok_mse.pt \
-    --output_dir /path/to/output \
+    --checkpoint "/path/to/infotok_mse.pt" \
+    --output_dir "/path/to/output" \
     --tokenizer_type OURS4x8x8-mse-256p-88 \
-    --temporal_window 33 \
-    --overlap_window 5 \
+    --temporal_window 81 \
+    --overlap_window 3 \
     --strategy global_elbo \
     --avg_rate 0.5 \
     --mode torch
@@ -88,12 +109,70 @@ python3 -m cosmos_predict1.tokenizer.inference.video_cli \
 | `--checkpoint` | Path to model checkpoint | Required |
 | `--output_dir` | Output directory | Required |
 | `--tokenizer_type` | Model architecture | `OURS4x8x8-mse-256p-88` |
-| `--temporal_window` | Frames per window | `33` |
-| `--overlap_window` | Overlap frames for blending | `5` |
-| `--strategy` | Rate allocation (`global_elbo` or `static`) | `global_elbo` |
+| `--temporal_window` | Frames per window | `81` |
+| `--overlap_window` | Overlap frames for blending | `3` |
+| `--strategy` | Rate allocation (`global_elbo` or `elbo`) | `elbo` |
 | `--avg_rate` | Target average token usage ratio (0.0625~1.0) | `0.5` |
 
-Here, `global_elbo` means that we allocate the token budget across all temporal frames according to the ELBO values, while `static` means that we use `avg_rate` for all temporal frames (and mask tokens within each frame).
+With `global_elbo`, the token budget is distributed across all temporal frames based on their individual ELBO values, enabling global allocation. In contrast, `elbo` applies the same `avg_rate` to all clips—however, tokens are still adaptively masked within each clip using ELBO router, resulting in different rates for each block.
+
+## 📊 Evaluation
+
+### Dataset Preparation
+
+```bash
+pip install -U "huggingface_hub[cli]"
+
+# TokenBench 240p
+huggingface-cli download --repo-type dataset qyoo/tokenbench_240p --local-dir ./tokenbench_240p
+
+# DAVIS 240p
+huggingface-cli download --repo-type dataset qyoo/davis_240p --local-dir ./davis_240p
+```
+
+### Reconstruction
+
+```bash
+python3 -m cosmos_predict1.tokenizer.inference.video_cli \
+    --video_pattern "tokenbench_240p/*.mp4" \
+    --checkpoint infotok-flex/infotok_mse.pt \
+    --output_dir infotok_tokenbench_240p \
+    --tokenizer_type OURS4x8x8-mse-256p-88 \
+    --temporal_window 81 \
+    --overlap_window 3 \
+    --strategy elbo \
+    --avg_rate 0.5 \
+    --mode torch
+```
+### Evaluation
+
+We use [TokenBench Repo](https://github.com/NVlabs/TokenBench) for the evaluation. Please follow the setup instruction accordingly.
+
+```bash
+git clone https://github.com/NVlabs/TokenBench.git
+cd TokenBench
+
+pip install -r requirements.txt
+```
+
+
+For example, when evaluating reconstruction on TokenBench-240p:
+
+```bash
+python3 -m token_bench.metrics_cli --mode=psnr \
+        --gtpath ../tokenbench_240p --targetpath ../infotok_tokenbench_240p
+```
+
+### Expected Result
+
+| Dataset             | Token Rate                   | Temporal Window | PSNR    | SSIM   |
+|---------------------------------|-------------------------|----------------|---------|--------|
+| TokenBench - 240p   | 0.75 | 81             | 29.7088 | 0.8786 |
+| TokenBench - 240p  | 0.5  | 81             | 28.9674 | 0.8522 |
+| DAVIS - 240p | 0.75 | 81 | 26.1951 | 0.7994 |
+| DAVIS - 240p | 0.5  | 81 | 25.1283 | 0.7529 |
+
+
 
 ## 🏃 Post-Training
 
